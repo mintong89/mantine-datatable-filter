@@ -1,6 +1,6 @@
 import { createElement, useCallback, useState } from 'react'
 import { HandlerOptions } from './types/handler-options'
-import { FilterType } from './types/filter-type'
+import { Filter } from './types/filter'
 import { initializeFilter } from './initialize-filter'
 import { useDebouncedState, useDidUpdate } from '@mantine/hooks'
 import {
@@ -11,13 +11,15 @@ import {
   TextInput,
 } from '@mantine/core'
 import { DatePicker, DateTimePicker, DateValue } from '@mantine/dates'
+import { HandlerValues } from './types/handler-values'
+import { HandlerReturn } from './types/handler-return'
 
 export default <T extends string>(options: HandlerOptions<T>) => {
   // sort
   const [sort, setSort] = useState(options?.sort)
 
   // filter
-  const [filters, setFilters] = useState<FilterType<T>>(
+  const [filters, setFilters] = useState<Filter<T>>(
     options.columns.map(column => initializeFilter(column)),
   )
 
@@ -32,7 +34,9 @@ export default <T extends string>(options: HandlerOptions<T>) => {
   const [page, setPage] = useState(1)
 
   // debounced
-  const [debouncedValue, setDebouncedValue] = useDebouncedState(
+  const [debouncedValue, setDebouncedValue] = useDebouncedState<
+    HandlerValues<T>
+  >(
     {
       sort,
       filters: filters,
@@ -201,9 +205,8 @@ export default <T extends string>(options: HandlerOptions<T>) => {
     }
   }
 
-  return {
+  return <HandlerReturn<T>>{
     values: debouncedValue,
-    filters: filters,
     getFilterProps: getFilterProps,
     refetch: handleChange,
     props: {

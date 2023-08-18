@@ -1,17 +1,21 @@
 import { DataTableSortStatus } from 'mantine-datatable'
-import { ColumnType } from './column-type'
+import { Column } from './column'
 import { HandlerCleanedValues, HandlerValues } from './handler-values'
 import { DependencyList } from 'react'
 
+export type Sort<T> = Omit<DataTableSortStatus, 'columnAccessor'> & {
+  columnAccessor: T
+}
+
+export type Pagination = {
+  totalRecords: number
+  sizes?: number | number[]
+}
+
 export type HandlerOptions<T extends string> = {
-  columns: ColumnType<T>[]
-  sort?: Omit<DataTableSortStatus, 'columnAccessor'> & {
-    columnAccessor: T
-  }
-  pagination?: {
-    totalRecords: number
-    sizes?: number | number[]
-  }
+  columns: Column<T>[]
+  sort?: Sort<T>
+  pagination?: Pagination
   onChange?: (
     values: HandlerValues<T>,
     cleanedValues: HandlerCleanedValues<T>,

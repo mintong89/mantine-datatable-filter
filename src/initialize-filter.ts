@@ -1,6 +1,6 @@
-import { ColumnType } from './types/column-type'
+import { Column } from './types/column'
 
-export const initializeFilter = <T extends string>(column: ColumnType<T>) => {
+export const initializeFilter = <T extends string>(column: Column<T>) => {
   switch (column.type) {
     case 'text':
       return {

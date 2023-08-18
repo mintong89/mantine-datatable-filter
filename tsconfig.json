@@ -12,8 +12,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
-  }
+  },
 
-  // "include": ["src"], // which files to compile
-  // "exclude": ["node_modules", "**/__tests__/*"] // which files to skip
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/*"]
 }

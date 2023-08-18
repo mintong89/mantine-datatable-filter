@@ -1,6 +1,6 @@
 import { DatePickerType, DatePickerValue } from '@mantine/dates'
 
-export type FilterType<
+export type Filter<
   T extends string,
   DateType extends DatePickerType = 'default',
 > = (

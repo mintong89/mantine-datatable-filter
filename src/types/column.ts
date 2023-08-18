@@ -11,7 +11,7 @@ import {
   DateTimePickerProps,
 } from '@mantine/dates'
 
-export type ColumnType<
+export type Column<
   T extends string,
   DateType extends DatePickerType = 'default',
 > = {

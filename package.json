@@ -1,6 +1,6 @@
 {
   "name": "mantine-datatable-filter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Column filter, sorting and pagination handler for mantine-datatable",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",

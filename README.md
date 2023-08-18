@@ -1,6 +1,11 @@
 # Mantine Datatable Filter
 a lightweight hook which help to handle [mantine datatable](https://github.com/icflorescu/mantine-datatable) filtering, column sorting and pagination.
 
+## Installation
+```
+npm install mantine-datatable-filter
+```
+
 ## Dependencies
 - @mantine/core
 - @mantine/hooks

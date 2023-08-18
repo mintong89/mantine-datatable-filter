@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "target": "ES2022",
+    "module": "ES2022",
+    "declaration": true,
+    "noImplicitAny": true,
+
+    "moduleResolution": "bundler",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  }
+
+  // "include": ["src"], // which files to compile
+  // "exclude": ["node_modules", "**/__tests__/*"] // which files to skip
+}

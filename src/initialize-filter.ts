@@ -13,7 +13,7 @@ export const initializeFilter = <T extends string>(column: ColumnType<T>) => {
       return {
         id: column.id,
         type: column.type,
-        value: '' as '',
+        value: '' as const,
       }
 
     case 'select':
@@ -27,14 +27,14 @@ export const initializeFilter = <T extends string>(column: ColumnType<T>) => {
       return {
         id: column.id,
         type: column.type,
-        value: null,
+        value: undefined,
       }
 
     case 'datetime':
       return {
         id: column.id,
         type: column.type,
-        value: null,
+        value: undefined,
       }
   }
 }

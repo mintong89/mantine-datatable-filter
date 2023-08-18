@@ -10,7 +10,7 @@ import {
   Stack,
   TextInput,
 } from '@mantine/core'
-import { DatePicker, DateTimePicker } from '@mantine/dates'
+import { DatePicker, DateTimePicker, DateValue } from '@mantine/dates'
 
 export default <T extends string>(options: HandlerOptions<T>) => {
   // sort
@@ -118,20 +118,19 @@ export default <T extends string>(options: HandlerOptions<T>) => {
             children: [
               createElement(DatePicker, {
                 ...column.inputProps,
-                value: filter.value as any,
+                value: filter.value,
                 onChange: value =>
                   setFilters(filters => {
                     const result = [...filters]
 
                     const filter = filters[accessorIndex]
                     if (filter.type !== 'date') return filters
-                    filter.value = value as any
+                    filter.value = value as DateValue
 
                     return result
                   }),
               }),
-              // @ts-ignore
-              createElement(Button, {
+              createElement(Button as unknown as 'button', {
                 disabled: !filter.value,
                 color: 'red',
                 onClick: () =>
@@ -140,7 +139,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
 
                     const filter = filters[accessorIndex]
                     if (filter.type !== 'date') return filters
-                    filter.value = undefined as any
+                    filter.value = undefined
 
                     return result
                   }),
@@ -158,7 +157,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
             children: [
               createElement(DateTimePicker, {
                 ...column.inputProps,
-                value: filter.value as any,
+                value: filter.value,
                 onChange: value =>
                   setFilters(filters => {
                     const result = [...filters]
@@ -170,8 +169,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
                     return result
                   }),
               }),
-              // @ts-ignore
-              createElement(Button, {
+              createElement(Button as unknown as 'button', {
                 disabled: !filter.value,
                 color: 'red',
                 onClick: () =>
@@ -180,7 +178,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
 
                     const filter = filters[accessorIndex]
                     if (filter.type !== 'date') return filters
-                    filter.value = undefined as any
+                    filter.value = undefined
 
                     return result
                   }),
@@ -210,7 +208,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
     refetch: handleChange,
     props: {
       sortStatus: sort,
-      onSortStatusChange: setSort as any,
+      onSortStatusChange: setSort,
       totalRecords: options.pagination?.totalRecords,
       recordsPerPage: pageSize,
       page: page,

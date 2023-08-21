@@ -54,7 +54,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
         filters: _obj(filters.map(filter => [filter.accessor, filter])),
         pagination: { page: page, size: pageSize },
       }),
-    [sort, filters, page, pageSize],
+    [sort, filters, page, pageSize, ...(options?.deps ?? [])],
   )
 
   const handleChange = useCallback(
@@ -78,9 +78,9 @@ export default <T extends string>(options: HandlerOptions<T>) => {
             }),
         ),
       }),
-    [sort, filters, page, pageSize],
+    [sort, filters, page, pageSize, ...(options?.deps ?? [])],
   )
-  useDidUpdate(handleChange, [debouncedValue, ...(options?.deps ?? [])])
+  useDidUpdate(handleChange, [debouncedValue])
 
   const getFilterProps = (accessor: T) => {
     const accessorIndex = options.columns.findIndex(

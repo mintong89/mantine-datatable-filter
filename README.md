@@ -76,21 +76,58 @@ return <DataTable
 ```
 
 ## APIs
-### Options
+### HandlerOptions
 
-#### Columns
+#### columns
+| Property | Type | Default Value | Description |
+| --- | --- | --- | --- |
+| accessor | string | | Primary key for each column. |
+| type | "text" \| "number" \| "date" \| "datetime" \| "select" | | Column type. |
+| post? | "text" \| "number" \| "date" \| "datetime" \| "select" | () => {} | Post process  function for a column. Note this will affect only for cleaned value. |
+| inputProps? | InputProps | {} | Props for filter input. Please refer to mantine documentations for input props. |
+| resetLabel? | string | "Reset" | Date type only. |
+
+#### sorts?
+| Property | Type | Default Value | Description |
+| --- | --- | --- | --- |
+| columnAccessor | string | | Default sorting key. |
+| direction | "asc" \| "desc" | | Direction of sorting. |
+
+#### pagination
+| Property | Type | Default Value | Description |
+| --- | --- | --- | --- |
+| totalRecords | number | | Total records. |
+| sizes? | number \| number\[\] | 10 | Total records per page. |
+
+#### onChange(values, cleanedValues) => void
+| Property | Type | Default Value | Description |
+| --- | --- | --- | --- |
+| values | HandlerValues | | Raw values. |
+| cleanedValues | HandlerCleanedValues | | Cleaned, with post data process and removed blank filters' values. |
+
+| Property | Type | Default Value | Description |
+| --- | --- | --- | --- |
+| debounced? | number | 0 | Debounced state for onChange when user input on filters. |
+| deps? | DependencyList \| any[] | [] | Dependencies for triggering onChange. This is useful for adding extra features to the handler. |
+
+### HandlerReturn
+| Property | Type | Description |
+| --- | --- | --- |
+| values | HandlerValues | Handler values. |
+| getFilterProps | (accessor: string) => FilterProps | Getter for generating filter option props for a column. |
+| refetch | () => void | Function for triggering refetch. |
+| props | DatatableProps | Sorting and pagination props for datatable. |
+
+### HandlerValues
+| Property | Type | Description |
+| --- | --- | --- |
+| sort | DataTableSortStatus \| null | Column for sorting. |
+| filters | all of { key: FilterType } | Column filters values. |
+| pagination | { page: number; size: number } | Column pagination values. |
+
+### FilterType
 | Property | Type | Description |
 | --- | --- | --- |
 | accessor | string | Primary key for each column. |
-| type | "text" \| "number" \| "date" \| "datetime" \| "select" | Column type.
-| post? | "text" \| "number" \| "date" \| "datetime" \| "select" | Post value handle function for a column. Note this will affect only for cleaned value.
-| inputProps? | InputProps | Props for filter input.
-| resetLabel? | string | Date type only.
-
-#### Sorts?
-| Property | Type | Description |
-| --- | --- | --- |
-| columnAccessor | string | Default sorting key. |
-| direction | "asc" \| "desc" | Direction of sorting. |
-
-wip
+| type | "text" \| "number" \| "date" \| "datetime" \| "select" | Column type. |
+| value | (depends on type, refer to mantine documentation) | Column value. |

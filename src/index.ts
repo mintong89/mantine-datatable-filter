@@ -18,7 +18,7 @@ import { getFilterType, _obj } from './utils'
 
 export default <T extends string>(options: HandlerOptions<T>) => {
   // sort
-  const [sort, setSort] = useState(options?.sort)
+  const [sort, setSort] = useState(options?.sort ?? null)
 
   // filter
   const [filters, setFilters] = useState<Filter<T>>(
@@ -80,7 +80,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
       }),
     [sort, filters, page, pageSize],
   )
-  useDidUpdate(handleChange, [debouncedValue, ...[options.deps]])
+  useDidUpdate(handleChange, [debouncedValue, ...(options?.deps ?? [])])
 
   const getFilterProps = (accessor: T) => {
     const accessorIndex = options.columns.findIndex(

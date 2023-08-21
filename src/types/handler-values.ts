@@ -2,11 +2,13 @@ import { DataTableSortStatus } from 'mantine-datatable'
 import { FilterReturn } from '.'
 
 export type HandlerValues<T extends string> = {
-  sort?: Omit<DataTableSortStatus, 'columnAccessor'> & {
-    columnAccessor: T
-  }
+  sort:
+    | (Omit<DataTableSortStatus, 'columnAccessor'> & {
+        columnAccessor: T
+      })
+    | null
   filters: FilterReturn<T>
-  pagination?: {
+  pagination: {
     page: number
     size: number
   }

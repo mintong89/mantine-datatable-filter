@@ -1,40 +1,43 @@
-import { Column } from './types/column'
+import { Column } from './types'
 
-export const initializeFilter = <T extends string>(column: Column<T>) => {
+export const getFilterType = <T extends string>(column: Column<T>) => {
   switch (column.type) {
     case 'text':
       return {
-        id: column.id,
+        accessor: column.accessor,
         type: column.type,
         value: '',
       }
 
     case 'number':
       return {
-        id: column.id,
+        accessor: column.accessor,
         type: column.type,
         value: '' as const,
       }
 
     case 'select':
       return {
-        id: column.id,
+        accessor: column.accessor,
         type: column.type,
         value: [],
       }
 
     case 'date':
       return {
-        id: column.id,
+        accessor: column.accessor,
         type: column.type,
         value: undefined,
       }
 
     case 'datetime':
       return {
-        id: column.id,
+        accessor: column.accessor,
         type: column.type,
         value: undefined,
       }
   }
 }
+
+export const _obj = <K extends string, V>(arr: [K, V][]) =>
+  Object.fromEntries(arr) as Record<K, V>

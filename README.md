@@ -12,10 +12,13 @@ npm install mantine-datatable-filter
 - mantine-datatable
 
 ## Example
+1. Import libraries.
 ```tsx
 import { DataTable } from 'mantine-datatable'
 import useMantineDataTableFilter from 'mantine-datatable-filter'
-
+```
+2. Create handler hook.
+```tsx
 const dtFilter = useMantineDataTableFilter({
     sort: {
         columnAccessor: 'id',
@@ -44,35 +47,50 @@ const dtFilter = useMantineDataTableFilter({
       }
     ],
     onChange: (values, cleanedValues) => {
-        // pass to backend
+        // handle change
     },
     debounced: 200
 })
-
+```
+3. Add props to datatable.
+```tsx
 return <DataTable
-          {...dtFilter.props}
-          columns={[
-            {
-              accessor: 'id',
-              title: 'ID',
-              sortable: true,
-              ...dtFilter.getFilterProps('id')
-            },
-            {
-              accessor: 'name',
-              title: 'Name',
-              sortable: true,
-              ...dtFilter.getFilterProps('name')
-            }
-          ]}
+           // Add handler props here.
+           {...dtFilter.props}
+           columns={[
+               {
+                 accessor: 'id',
+                 title: 'ID',
+                 sortable: true,
+                 // Add filter props for each of columns.
+                 ...dtFilter.getFilterProps('id')
+               },
+               {
+                 accessor: 'name',
+                 title: 'Name',
+                 sortable: true,
+                 ...dtFilter.getFilterProps('name')
+               }
+           ]}
        />
 ```
 
 ## APIs
 ### Options
+
+#### Columns
 | Property | Type | Description |
 | --- | --- | --- |
-| columns -> id | string | Column ID for filtering. |
-| columns -> type | "text" \| "number" \| "date" \| "datetime" \| "select" | Column value type
+| accessor | string | Primary key for each column. |
+| type | "text" \| "number" \| "date" \| "datetime" \| "select" | Column type.
+| post? | "text" \| "number" \| "date" \| "datetime" \| "select" | Post value handle function for a column. Note this will affect only for cleaned value.
+| inputProps? | InputProps | Props for filter input.
+| resetLabel? | string | Date type only.
+
+#### Sorts?
+| Property | Type | Description |
+| --- | --- | --- |
+| columnAccessor | string | Default sorting key. |
+| direction | "asc" \| "desc" | Direction of sorting. |
 
 wip

@@ -1,7 +1,4 @@
 import { createElement, useCallback, useState } from 'react'
-import { HandlerOptions } from './types/handler-options'
-import { Filter } from './types/filter'
-import { initializeFilter } from './initialize-filter'
 import { useDebouncedState, useDidUpdate } from '@mantine/hooks'
 import {
   Button,
@@ -10,9 +7,14 @@ import {
   Stack,
   TextInput,
 } from '@mantine/core'
-import { DatePicker, DateTimePicker, DateValue } from '@mantine/dates'
-import { HandlerValues } from './types/handler-values'
-import { HandlerReturn } from './types/handler-return'
+import {
+  DatePicker,
+  DateTimePicker,
+  DateValue,
+  DatesRangeValue,
+} from '@mantine/dates'
+import { HandlerOptions, Filter, HandlerValues, HandlerReturn } from './types'
+import { getFilterType, _obj } from './utils'
 
 export default <T extends string>(options: HandlerOptions<T>) => {
   // sort
@@ -20,7 +22,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
 
   // filter
   const [filters, setFilters] = useState<Filter<T>>(
-    options.columns.map(column => initializeFilter(column)),
+    options.columns.map(column => getFilterType(column)),
   )
 
   // pagination
@@ -39,7 +41,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
   >(
     {
       sort,
-      filters: filters,
+      filters: _obj(filters.map(filter => [filter.accessor, filter])),
       pagination: { page: page, size: pageSize },
     },
     options?.debounced ?? 0,
@@ -49,7 +51,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
     () =>
       setDebouncedValue({
         sort,
-        filters,
+        filters: _obj(filters.map(filter => [filter.accessor, filter])),
         pagination: { page: page, size: pageSize },
       }),
     [sort, filters, page, pageSize],
@@ -59,7 +61,22 @@ export default <T extends string>(options: HandlerOptions<T>) => {
     () =>
       options.onChange?.(debouncedValue, {
         ...debouncedValue,
-        filters: filters.filter(filter => filter.value),
+        filters: _obj(
+          filters
+            .filter(filter => filter.value)
+            .map(filter => {
+              // eslint-disable-next-line
+              const post: ((value: any) => any) | undefined =
+                options.columns.find(
+                  column => column.accessor === filter.accessor,
+                )?.post
+
+              return [
+                filter.accessor,
+                { ...filter, value: post ? post(filter.value) : filter.value },
+              ]
+            }),
+        ),
       }),
     [sort, filters, page, pageSize],
   )
@@ -67,7 +84,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
 
   const getFilterProps = (accessor: T) => {
     const accessorIndex = options.columns.findIndex(
-      column => column.id === accessor,
+      column => column.accessor === accessor,
     )
     const column = options.columns[accessorIndex]
     const filter = filters[accessorIndex]
@@ -76,17 +93,15 @@ export default <T extends string>(options: HandlerOptions<T>) => {
 
     switch (column.type) {
       case 'text':
-        if (filter.type !== 'text') return null
         return {
           filter: createElement(TextInput, {
             ...column?.inputProps,
-            value: filter.value,
+            value: filter.value as string,
             onChange: event =>
               setFilters(filters => {
                 const result = [...filters]
 
                 const filter = filters[accessorIndex]
-                if (filter.type !== 'text') return filters
                 filter.value = event.target.value
 
                 return result
@@ -96,17 +111,15 @@ export default <T extends string>(options: HandlerOptions<T>) => {
         }
 
       case 'number':
-        if (filter.type !== 'number') return null
         return {
           filter: createElement(NumberInput, {
             ...column?.inputProps,
-            value: filter.value,
+            value: filter.value as number | '' | undefined,
             onChange: value =>
               setFilters(filters => {
                 const result = [...filters]
 
                 const filter = filters[accessorIndex]
-                if (filter.type !== 'number') return filters
                 filter.value = value
 
                 return result
@@ -116,19 +129,21 @@ export default <T extends string>(options: HandlerOptions<T>) => {
         }
 
       case 'date':
-        if (filter.type !== 'date') return null
         return {
           filter: createElement(Stack, {
             children: [
               createElement(DatePicker, {
                 ...column.inputProps,
-                value: filter.value,
+                value: filter.value as
+                  | DateValue
+                  | DatesRangeValue
+                  | Date[]
+                  | undefined,
                 onChange: value =>
                   setFilters(filters => {
                     const result = [...filters]
 
                     const filter = filters[accessorIndex]
-                    if (filter.type !== 'date') return filters
                     filter.value = value as DateValue
 
                     return result
@@ -142,7 +157,6 @@ export default <T extends string>(options: HandlerOptions<T>) => {
                     const result = [...filters]
 
                     const filter = filters[accessorIndex]
-                    if (filter.type !== 'date') return filters
                     filter.value = undefined
 
                     return result
@@ -155,19 +169,17 @@ export default <T extends string>(options: HandlerOptions<T>) => {
         }
 
       case 'datetime':
-        if (filter.type !== 'datetime') return null
         return {
           filter: createElement(Stack, {
             children: [
               createElement(DateTimePicker, {
                 ...column.inputProps,
-                value: filter.value,
+                value: filter.value as Date,
                 onChange: value =>
                   setFilters(filters => {
                     const result = [...filters]
 
                     const filter = filters[accessorIndex]
-                    if (filter.type !== 'datetime') return filters
                     filter.value = value
 
                     return result
@@ -181,7 +193,6 @@ export default <T extends string>(options: HandlerOptions<T>) => {
                     const result = [...filters]
 
                     const filter = filters[accessorIndex]
-                    if (filter.type !== 'date') return filters
                     filter.value = undefined
 
                     return result
@@ -199,6 +210,16 @@ export default <T extends string>(options: HandlerOptions<T>) => {
             clearable: true,
             searchable: true,
             data: column.data,
+            value: filter.value as string[],
+            onChange: value =>
+              setFilters(filters => {
+                const result = [...filters]
+
+                const filter = filters[accessorIndex]
+                filter.value = value
+
+                return result
+              }),
             ...column?.inputProps,
           }),
         }

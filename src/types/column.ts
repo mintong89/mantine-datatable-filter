@@ -15,7 +15,7 @@ export type Column<
   T extends string,
   DateType extends DatePickerType = 'default',
 > = {
-  id: T
+  accessor: T
 } & (
   | {
       type: 'text'

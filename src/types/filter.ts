@@ -1,12 +1,21 @@
 import { DatePickerType, DatePickerValue } from '@mantine/dates'
 
+export type FilterType<
+  T extends string,
+  DateType extends DatePickerType = 'default',
+> =
+  | { accessor: T; type: 'text'; value: string }
+  | { accessor: T; type: 'number'; value: number | '' }
+  | { accessor: T; type: 'date'; value: DatePickerValue<DateType> | undefined }
+  | { accessor: T; type: 'datetime'; value: Date | null | undefined }
+  | { accessor: T; type: 'select'; value: string[] }
+
 export type Filter<
   T extends string,
   DateType extends DatePickerType = 'default',
-> = (
-  | { id: T; type: 'text'; value: string }
-  | { id: T; type: 'number'; value: number | '' }
-  | { id: T; type: 'date'; value: DatePickerValue<DateType> | undefined }
-  | { id: T; type: 'datetime'; value: Date | null | undefined }
-  | { id: T; type: 'select'; value: string[] }
-)[]
+> = FilterType<T, DateType>[]
+
+export type FilterReturn<
+  T extends string,
+  DateType extends DatePickerType = 'default',
+> = Record<T, FilterType<T, DateType>>

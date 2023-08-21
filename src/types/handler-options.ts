@@ -1,11 +1,5 @@
-import { DataTableSortStatus } from 'mantine-datatable'
-import { Column } from './column'
-import { HandlerCleanedValues, HandlerValues } from './handler-values'
 import { DependencyList } from 'react'
-
-export type Sort<T> = Omit<DataTableSortStatus, 'columnAccessor'> & {
-  columnAccessor: T
-}
+import { Column, Sort, HandlerValues, HandlerCleanedValues } from '.'
 
 export type Pagination = {
   totalRecords: number

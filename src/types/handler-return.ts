@@ -1,7 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import { FilterProps } from './filter-props'
-import { Sort } from './handler-options'
-import { HandlerValues } from './handler-values'
+import { HandlerValues, FilterProps, Sort } from '.'
 
 export type HandlerReturn<T extends string> = {
   values: HandlerValues<T>

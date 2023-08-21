@@ -78,7 +78,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
             }),
         ),
       }),
-    [sort, filters, page, pageSize, ...(options?.deps ?? [])],
+    [debouncedValue],
   )
   useDidUpdate(handleChange, [debouncedValue])
 

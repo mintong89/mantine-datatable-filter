@@ -30,7 +30,7 @@ const dtFilter = useMantineDataTableFilter({
     },
     columns: [
       {
-          id: 'id',
+          accessor: 'id',
           type: 'number',
           inputProps: {
               label: 'ID',
@@ -38,7 +38,7 @@ const dtFilter = useMantineDataTableFilter({
           }
       },
       {
-          id: 'name',
+          accessor: 'name',
           type: 'text',
           inputProps: {
               label: 'Name',
@@ -115,7 +115,7 @@ return <DataTable
 | --- | --- | --- |
 | values | HandlerValues | Handler values. |
 | getFilterProps | (accessor: string) => FilterProps | Getter for generating filter option props for a column. |
-| refetch | () => void | Function for triggering refetch. |
+| refetch | () => void | Function for triggering onChange. |
 | props | DatatableProps | Sorting and pagination props for datatable. |
 
 ### HandlerValues

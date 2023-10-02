@@ -33,7 +33,7 @@ export default <T extends string>(options: HandlerOptions<T>) => {
         : options.pagination.sizes[0]
       : 10,
   )
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(options?.pagination?.initialPage ?? 1)
 
   // debounced
   const [debouncedValue, setDebouncedValue] = useDebouncedState<
@@ -47,15 +47,14 @@ export default <T extends string>(options: HandlerOptions<T>) => {
     options?.debounced ?? 0,
   )
 
-  useDidUpdate(
-    () =>
-      setDebouncedValue({
-        sort,
-        filters: _obj(filters.map(filter => [filter.accessor, filter])),
-        pagination: { page: page, size: pageSize },
-      }),
-    [sort, filters, page, pageSize, ...(options?.deps ?? [])],
-  )
+  useDidUpdate(() => {
+    setPage(1)
+    setDebouncedValue({
+      sort,
+      filters: _obj(filters.map(filter => [filter.accessor, filter])),
+      pagination: { page: 1, size: pageSize },
+    })
+  }, [sort, filters, pageSize, ...(options?.deps ?? [])])
 
   const handleChange = useCallback(
     () =>
@@ -82,149 +81,152 @@ export default <T extends string>(options: HandlerOptions<T>) => {
   )
   useDidUpdate(handleChange, [debouncedValue])
 
-  const getFilterProps = (accessor: T) => {
-    const accessorIndex = options.columns.findIndex(
-      column => column.accessor === accessor,
-    )
-    const column = options.columns[accessorIndex]
-    const filter = filters[accessorIndex]
+  const getFilterProps = useCallback(
+    (accessor: T) => {
+      const accessorIndex = options.columns.findIndex(
+        column => column.accessor === accessor,
+      )
+      const column = options.columns[accessorIndex]
+      const filter = filters[accessorIndex]
 
-    if (!column) return null
+      if (!column) return null
 
-    switch (column.type) {
-      case 'text':
-        return {
-          filter: createElement(TextInput, {
-            ...column?.inputProps,
-            value: filter.value as string,
-            onChange: event =>
-              setFilters(filters => {
-                const result = [...filters]
+      switch (column.type) {
+        case 'text':
+          return {
+            filter: createElement(TextInput, {
+              ...column?.inputProps,
+              value: filter.value as string,
+              onChange: event =>
+                setFilters(filters => {
+                  const result = [...filters]
 
-                const filter = filters[accessorIndex]
-                filter.value = event.target.value
+                  const filter = filters[accessorIndex]
+                  filter.value = event.target.value
 
-                return result
-              }),
-          }),
-          filtering: filter.value !== '',
-        }
+                  return result
+                }),
+            }),
+            filtering: filter.value !== '',
+          }
 
-      case 'number':
-        return {
-          filter: createElement(NumberInput, {
-            ...column?.inputProps,
-            value: filter.value as number | '' | undefined,
-            onChange: value =>
-              setFilters(filters => {
-                const result = [...filters]
+        case 'number':
+          return {
+            filter: createElement(NumberInput, {
+              ...column?.inputProps,
+              value: filter.value as number | '' | undefined,
+              onChange: value =>
+                setFilters(filters => {
+                  const result = [...filters]
 
-                const filter = filters[accessorIndex]
-                filter.value = value
+                  const filter = filters[accessorIndex]
+                  filter.value = value
 
-                return result
-              }),
-          }),
-          filtering: filter.value !== '',
-        }
+                  return result
+                }),
+            }),
+            filtering: filter.value !== '',
+          }
 
-      case 'date':
-        return {
-          filter: createElement(Stack, {
-            children: [
-              createElement(DatePicker, {
-                ...column.inputProps,
-                value: filter.value as
-                  | DateValue
-                  | DatesRangeValue
-                  | Date[]
-                  | undefined,
-                onChange: value =>
-                  setFilters(filters => {
-                    const result = [...filters]
+        case 'date':
+          return {
+            filter: createElement(Stack, {
+              children: [
+                createElement(DatePicker, {
+                  ...column.inputProps,
+                  value: filter.value as
+                    | DateValue
+                    | DatesRangeValue
+                    | Date[]
+                    | undefined,
+                  onChange: value =>
+                    setFilters(filters => {
+                      const result = [...filters]
 
-                    const filter = filters[accessorIndex]
-                    filter.value = value as DateValue
+                      const filter = filters[accessorIndex]
+                      filter.value = value as DateValue
 
-                    return result
-                  }),
-              }),
-              createElement(Button as unknown as 'button', {
-                disabled: !filter.value,
-                color: 'red',
-                onClick: () =>
-                  setFilters(filters => {
-                    const result = [...filters]
+                      return result
+                    }),
+                }),
+                createElement(Button as unknown as 'button', {
+                  disabled: !filter.value,
+                  color: 'red',
+                  onClick: () =>
+                    setFilters(filters => {
+                      const result = [...filters]
 
-                    const filter = filters[accessorIndex]
-                    filter.value = undefined
+                      const filter = filters[accessorIndex]
+                      filter.value = undefined
 
-                    return result
-                  }),
-                children: column?.resetLabel ?? 'Reset',
-              }),
-            ],
-          }),
-          filtering: !!filter.value,
-        }
+                      return result
+                    }),
+                  children: column?.resetLabel ?? 'Reset',
+                }),
+              ],
+            }),
+            filtering: !!filter.value,
+          }
 
-      case 'datetime':
-        return {
-          filter: createElement(Stack, {
-            children: [
-              createElement(DateTimePicker, {
-                ...column.inputProps,
-                value: filter.value as Date,
-                onChange: value =>
-                  setFilters(filters => {
-                    const result = [...filters]
+        case 'datetime':
+          return {
+            filter: createElement(Stack, {
+              children: [
+                createElement(DateTimePicker, {
+                  ...column.inputProps,
+                  value: filter.value as Date,
+                  onChange: value =>
+                    setFilters(filters => {
+                      const result = [...filters]
 
-                    const filter = filters[accessorIndex]
-                    filter.value = value
+                      const filter = filters[accessorIndex]
+                      filter.value = value
 
-                    return result
-                  }),
-              }),
-              createElement(Button as unknown as 'button', {
-                disabled: !filter.value,
-                color: 'red',
-                onClick: () =>
-                  setFilters(filters => {
-                    const result = [...filters]
+                      return result
+                    }),
+                }),
+                createElement(Button as unknown as 'button', {
+                  disabled: !filter.value,
+                  color: 'red',
+                  onClick: () =>
+                    setFilters(filters => {
+                      const result = [...filters]
 
-                    const filter = filters[accessorIndex]
-                    filter.value = undefined
+                      const filter = filters[accessorIndex]
+                      filter.value = undefined
 
-                    return result
-                  }),
-                children: column?.resetLabel ?? 'Reset',
-              }),
-            ],
-          }),
-        }
+                      return result
+                    }),
+                  children: column?.resetLabel ?? 'Reset',
+                }),
+              ],
+            }),
+          }
 
-      case 'select':
-        if (filter.type !== 'select') return null
-        return {
-          filter: createElement(MultiSelect, {
-            clearable: true,
-            searchable: true,
-            data: column.data,
-            value: filter.value as string[],
-            onChange: value =>
-              setFilters(filters => {
-                const result = [...filters]
+        case 'select':
+          if (filter.type !== 'select') return null
+          return {
+            filter: createElement(MultiSelect, {
+              clearable: true,
+              searchable: true,
+              data: column.data,
+              value: filter.value as string[],
+              onChange: value =>
+                setFilters(filters => {
+                  const result = [...filters]
 
-                const filter = filters[accessorIndex]
-                filter.value = value
+                  const filter = filters[accessorIndex]
+                  filter.value = value
 
-                return result
-              }),
-            ...column?.inputProps,
-          }),
-        }
-    }
-  }
+                  return result
+                }),
+              ...column?.inputProps,
+            }),
+          }
+      }
+    },
+    [options, filters],
+  )
 
   return <HandlerReturn<T>>{
     values: debouncedValue,
@@ -236,7 +238,14 @@ export default <T extends string>(options: HandlerOptions<T>) => {
       totalRecords: options.pagination?.totalRecords,
       recordsPerPage: pageSize,
       page: page,
-      onPageChange: (p: number) => setPage(p),
+      onPageChange: (p: number) => {
+        setPage(p)
+        setDebouncedValue({
+          sort,
+          filters: _obj(filters.map(filter => [filter.accessor, filter])),
+          pagination: { page: p, size: pageSize },
+        })
+      },
       recordsPerPageOptions:
         typeof options?.pagination?.sizes === 'object'
           ? options?.pagination?.sizes

@@ -96,6 +96,7 @@ return <DataTable
 #### pagination
 | Property | Type | Default Value | Description |
 | --- | --- | --- | --- |
+| initialPage | number | 1 | Initial page. |
 | totalRecords | number | | Total records. |
 | sizes? | number \| number\[\] | 10 | Total records per page. |
 

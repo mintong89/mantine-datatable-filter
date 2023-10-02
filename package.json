@@ -1,9 +1,13 @@
 {
   "name": "mantine-datatable-filter",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Column filter, sorting and pagination handler for mantine-datatable",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mintong89/mantine-datatable-filter.git"
+  },
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "build": "tsc",

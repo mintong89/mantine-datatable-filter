@@ -2,6 +2,7 @@ import { DependencyList } from 'react'
 import { Column, Sort, HandlerValues, HandlerCleanedValues } from '.'
 
 export type Pagination = {
+  initialPage?: number
   totalRecords: number
   sizes?: number | number[]
 }

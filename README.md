@@ -83,7 +83,7 @@ return <DataTable
 | --- | --- | --- | --- |
 | accessor | string | | Primary key for each column. |
 | type | "text" \| "number" \| "date" \| "datetime" \| "select" | | Column type. |
-| post? | "text" \| "number" \| "date" \| "datetime" \| "select" | () => {} | Post process  function for a column. Note this will affect only for cleaned value. |
+| post? | (value: "text" \| "number" \| "date" \| "datetime" \| "select") => "text" \| "number" \| "date" \| "datetime" \| "select" | () => {} | Post process  function for a column. Note this will affect only for cleaned value. |
 | inputProps? | InputProps | {} | Props for filter input. Please refer to mantine documentations for input props. |
 | resetLabel? | string | "Reset" | Date type only. |
 
